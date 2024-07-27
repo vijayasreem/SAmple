@@ -5,8 +5,6 @@ import com.sacral.repository.AccountDetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class AccountDetService {
 
@@ -17,11 +15,7 @@ public class AccountDetService {
         this.accountDetRepository = accountDetRepository;
     }
 
-    public AccountDet findByIfscCode(String ifscCode) {
-        return accountDetRepository.findByIfscCode(ifscCode);
-    }
-
-    public List<AccountDet> findPossibleIfscCodes(String ifscCode) {
-        return accountDetRepository.findPossibleIfscCodes(ifscCode);
+    public void populateBankDetails(String ifscCode, AccountDet accountDet) {
+        accountDetRepository.populateBankDetails(ifscCode, accountDet);
     }
 }
