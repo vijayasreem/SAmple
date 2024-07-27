@@ -5,7 +5,9 @@ import com.sacral.model.ApplicationDetails;
 import com.sacral.repository.ApplicationDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class ApplicationDetailsService {
@@ -17,23 +19,31 @@ public class ApplicationDetailsService {
         this.applicationDetailsRepository = applicationDetailsRepository;
     }
 
-    @Transactional
-    public void updateStatusToPendingForAutoBbu(String applicationNumber) {
-        applicationDetailsRepository.updateStatusToPendingForAutoBbu(applicationNumber);
+    public List<ApplicationDetails> searchApplicationDetails(String applicationNo, String partnerType, Date fromDate, Date toDate) {
+        return applicationDetailsRepository.searchApplicationDetails(applicationNo, partnerType, fromDate, toDate);
     }
 
-    @Transactional
-    public void updateStatusToFrAr(String applicationNumber) {
-        applicationDetailsRepository.updateStatusToFrAr(applicationNumber);
+    public int countMissingDocuments(String appno) {
+        return applicationDetailsRepository.countMissingDocuments(appno);
     }
 
-    public String getContractId(String applicationNumber) {
-        return applicationDetailsRepository.getContractId(applicationNumber);
+    public int countBIDocuments(String appno) {
+        return applicationDetailsRepository.countBIDocuments(appno);
     }
 
-    public int getRuleErrorCount(Long activityId) {
-        return applicationDetailsRepository.getRuleErrorCount(activityId);
+    public int countPFDocuments(String appno) {
+        return applicationDetailsRepository.countPFDocuments(appno);
     }
 
-    // Add more business methods as needed
+    public int countPhotoDocuments(String appno) {
+        return applicationDetailsRepository.countPhotoDocuments(appno);
+    }
+
+    public int countAgeProofDocuments(String appno) {
+        return applicationDetailsRepository.countAgeProofDocuments(appno);
+    }
+
+    public int countAddressProofDocuments(String appno) {
+        return applicationDetailsRepository.countAddressProofDocuments(appno);
+    }
 }

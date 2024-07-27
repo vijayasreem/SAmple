@@ -1,11 +1,16 @@
 
 package com.sacral.controller;
 
+import com.sacral.model.ApplicationDetails;
 import com.sacral.service.ApplicationDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
+import java.util.List;
 
 @RestController
 public class ApplicationDetailsController {
@@ -17,25 +22,43 @@ public class ApplicationDetailsController {
         this.applicationDetailsService = applicationDetailsService;
     }
 
-    @PostMapping("/updateStatusToPendingForAutoBbu")
-    public void updateStatusToPendingForAutoBbu(@RequestBody String applicationNumber) {
-        applicationDetailsService.updateStatusToPendingForAutoBbu(applicationNumber);
+    @GetMapping("/searchApplicationDetails")
+    public List<ApplicationDetails> searchApplicationDetails(
+            @RequestParam(required = false) String applicationNo,
+            @RequestParam(required = false) String partnerType,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date fromDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date toDate
+    ) {
+        return applicationDetailsService.searchApplicationDetails(applicationNo, partnerType, fromDate, toDate);
     }
 
-    @PostMapping("/updateStatusToFrAr")
-    public void updateStatusToFrAr(@RequestBody String applicationNumber) {
-        applicationDetailsService.updateStatusToFrAr(applicationNumber);
+    @GetMapping("/countMissingDocuments")
+    public int countMissingDocuments(@RequestParam String appno) {
+        return applicationDetailsService.countMissingDocuments(appno);
     }
 
-    @PostMapping("/getContractId")
-    public String getContractId(@RequestBody String applicationNumber) {
-        return applicationDetailsService.getContractId(applicationNumber);
+    @GetMapping("/countBIDocuments")
+    public int countBIDocuments(@RequestParam String appno) {
+        return applicationDetailsService.countBIDocuments(appno);
     }
 
-    @PostMapping("/getRuleErrorCount")
-    public int getRuleErrorCount(@RequestBody Long activityId) {
-        return applicationDetailsService.getRuleErrorCount(activityId);
+    @GetMapping("/countPFDocuments")
+    public int countPFDocuments(@RequestParam String appno) {
+        return applicationDetailsService.countPFDocuments(appno);
     }
 
-    // Add more business methods as needed
+    @GetMapping("/countPhotoDocuments")
+    public int countPhotoDocuments(@RequestParam String appno) {
+        return applicationDetailsService.countPhotoDocuments(appno);
+    }
+
+    @GetMapping("/countAgeProofDocuments")
+    public int countAgeProofDocuments(@RequestParam String appno) {
+        return applicationDetailsService.countAgeProofDocuments(appno);
+    }
+
+    @GetMapping("/countAddressProofDocuments")
+    public int countAddressProofDocuments(@RequestParam String appno) {
+        return applicationDetailsService.countAddressProofDocuments(appno);
+    }
 }
