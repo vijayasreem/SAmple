@@ -11,31 +11,40 @@ import java.util.List;
 
 public interface DeqcSearchRepository extends JpaRepository<DeqcSearch, Long> {
 
-    @Query("SELECT COUNT(*) FROM DeqcDisplay")
-    int countRecordsInDeqcDisplay();
-
-    @Query("SELECT d.applicationNumber FROM DeqcDisplay d WHERE d.ch = 'Y'")
-    List<String> getApplicationNumbersWithChY();
-
-    @Query("SELECT d.reasonLink FROM DeqcSearch d WHERE d.applicationNumber = :applicationNumber")
-    String getReasonLinkByApplicationNumber(String applicationNumber);
+    @Query("SELECT d FROM DeqcSearch d WHERE d.moduleType = 'DEQC_SEARCH' AND d.title = 'Reject Applications from DEQC_SEARCH Module'")
+    List<DeqcSearch> findRejectApplications();
 
     @Modifying
     @Transactional
-    @Query("UPDATE DeqcSearch SET reasonLink = :reasonLink WHERE applicationNumber = :applicationNumber")
-    void updateReasonLinkByApplicationNumber(String reasonLink, String applicationNumber);
+    @Query("UPDATE DeqcSearch d SET d.comments = :comments WHERE d.applicationNumber = :applicationNumber")
+    void updateComments(String comments, String applicationNumber);
 
     @Modifying
     @Transactional
-    @Query(nativeQuery = true, value = "CALL auto_reject_application(:applicationNumber)")
-    void autoRejectApplication(String applicationNumber);
+    @Query("UPDATE DeqcSearch d SET d.status = 'Rejected' WHERE d.applicationNumber = :applicationNumber")
+    void rejectApplication(String applicationNumber);
 
-    @Query(nativeQuery = true, value = "SELECT CONT_ID FROM azbj_batch_items WHERE APPLICATION_NO = :applicationNumber AND TRANSACTION_TYPE = 'FRP'")
-    String getContractIdByApplicationNumber(String applicationNumber);
+    @Query("SELECT d.applicationNumber FROM DeqcSearch d WHERE d.moduleType = 'DEQC_DISPLAY'")
+    List<String> getApplicationNumbers();
+
+    @Query("SELECT COUNT(d) FROM DeqcSearch d WHERE d.moduleType = 'DEQC_DISPLAY'")
+    int getRecordCount();
+
+    @Query("SELECT d FROM DeqcSearch d WHERE d.moduleType = 'DEQC_DISPLAY' AND d.ch = 'Y'")
+    List<DeqcSearch> getRecordsWithChMarked();
+
+    @Query("SELECT d FROM DeqcSearch d WHERE d.moduleType = 'DEQC_DISPLAY' AND d.applicationNumber = :applicationNumber AND d.transactionType = 'FRP'")
+    DeqcSearch findByApplicationNumberAndTransactionType(String applicationNumber);
+
+    @Query("SELECT d.reasonLink FROM DeqcSearch d WHERE d.moduleType = 'DEQC_SEARCH'")
+    String getReasonLink();
 
     @Modifying
     @Transactional
-    @Query(nativeQuery = true, value = "INSERT INTO azbj_uw_comments (event_no, contract_id, policy_no, move_code, policy_status, user_id, comment_date, comments, flag) VALUES (:eventNo, :contractId, :policyNo, 'AZBJ_WEB_OTC', :policyStatus, USER, SYSDATE, :comments, 'N')")
-    void insertNewComment(String eventNo, String contractId, String policyNo, String policyStatus, String comments);
+    @Query("INSERT INTO DeqcSearchComments (eventNo, contractId, policyNo, moveCode, policyStatus, userId, commentDate, comments, flag) " +
+            "VALUES (:eventNo, :contractId, :policyNo, 'AZBJ_WEB_OTC', :policyStatus, :userId, CURRENT_TIMESTAMP, :comments, 'N')")
+    void insertComment(String eventNo, String contractId, String policyNo, String policyStatus, String userId, String comments);
 
+    @Query("SELECT d.contractId FROM DeqcSearch d WHERE d.applicationNumber = :applicationNumber AND d.transactionType = 'FRP'")
+    String getContractId(String applicationNumber);
 }
