@@ -18,4 +18,7 @@ public class AccountDetService {
     public void populateBankDetails(String ifscCode, AccountDet accountDet) {
         accountDetRepository.populateBankDetails(ifscCode, accountDet);
     }
+
+    // Other CRUD methods...
+
 }

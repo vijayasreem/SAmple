@@ -21,4 +21,7 @@ public class AccountDetController {
     public void populateBankDetails(@PathVariable String ifscCode, @RequestBody AccountDet accountDet) {
         accountDetService.populateBankDetails(ifscCode, accountDet);
     }
+
+    // Other CRUD methods...
+
 }

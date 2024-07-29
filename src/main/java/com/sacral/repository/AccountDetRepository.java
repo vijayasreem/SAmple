@@ -13,4 +13,7 @@ public interface AccountDetRepository extends JpaRepository<AccountDet, Long> {
             "FROM azbj_bank_ifsc_detail " +
             "WHERE BANK_IFSC = :ifscCode", nativeQuery = true)
     void populateBankDetails(String ifscCode, AccountDet accountDet);
+
+    // Other CRUD methods...
+
 }
